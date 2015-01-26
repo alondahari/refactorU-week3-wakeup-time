@@ -23,8 +23,8 @@
     this._build();
   };
 
-  Clock.prototype.init = function () {
-    this.$element.append();
+  Clock.prototype._build = function () {
+    this.$element.append('<div>');
   };
 
   // A really lightweight plugin wrapper around the constructor,
@@ -34,12 +34,9 @@
           if (!$.data(this, 'plugin_' + pluginName)) {
               $.data(this, 'plugin_' + pluginName,
               new Clock( this, options ));
-
           }
       });
   };
 
 })( jQuery, window, document );
-
-var a = $('<div>');
-a.clock();
+$('.clock').clock();
