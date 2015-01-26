@@ -1,5 +1,9 @@
-describe('module', function() {
-  it('should do something', function() {
-    expect(true).toEqual(false);
+describe('clock', function() {
+
+  var fixture = $('<div>');
+  fixture.clock();
+
+  it('should append all elements to the DOM', function() {
+
   });
 });
