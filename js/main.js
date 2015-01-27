@@ -1,31 +1,44 @@
 ;(function ( $, window, document, undefined ) {
 
   // Create the defaults once
-  var pluginName = 'clock';
+  var pluginName = 'clock',
+      defaults = {
+        // allow passing a timeStamp, mainly for testing
+        timeStamp: undefined,
+
+        // allow passing an offset for different time zones
+        offset: 0
+      };
 
   // The actual plugin constructor
   function Clock( element, options ) {
       this.element = element;
       this.$element = $(element);
 
-      this.defaults = {
-
-      };
+      this.options = $.extend({}, defaults, options);
 
       this._name = pluginName;
 
       init(this);
 
-      return this;
   }
 
-  Clock.prototype = {
-
-  };
+  // Clock.prototype = {
+  //   setTimeStamp: function (timeStamp) {
+  //     this.options.timeStamp = timeStamp;
+  //   },
+  //   setOffset: function (offset) {
+  //     this.options.offset = offset;
+  //
+  //   }
+  // };
 
   var setTime = function(theClock){
-    var time = new Date();
-    time = time.getHours() + ':' + time.getMinutes() + ':' + time.getSeconds();
+    var time = theClock.options.timeStamp ? new Date(theClock.options.timeStamp) : new Date();
+    // sanitize offset
+    var offset = parseFloat(theClock.options.offset) || 0;
+
+    time = (time.getHours() + offset ) + ':' + time.getMinutes() + ':' + time.getSeconds();
     theClock.$element.find('.clock-text').text( format(time) );
   };
 
@@ -40,6 +53,7 @@
 
   var init = function (theClock) {
     build(theClock);
+    setTime(theClock);
     setInterval(setTime,1000, theClock);
   };
 

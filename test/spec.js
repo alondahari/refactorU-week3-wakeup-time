@@ -9,10 +9,25 @@ describe('clock', function() {
     expect(fixture.find('.inner-shell')).toContainElement('.pm-label');
     expect(fixture.find('.inner-shell')).toContainElement('.auto-label');
     expect(fixture.find('.inner-shell')).toContainElement('.clock-screen');
-    expect(fixture.find('.clock-screen')).toContainElement('.pm-indicator');
-    expect(fixture.find('.clock-screen')).toContainElement('.auto-indicator');
-    expect(fixture.find('.clock-screen')).toContainElement('.clock-text');
+      expect(fixture.find('.clock-screen')).toContainElement('.clock-text');
     expect(fixture.find('.inner-shell')).toContainElement('.am-freq');
     expect(fixture.find('.inner-shell')).toContainElement('.fm-freq');
+  });
+
+  it("should show the right time on document ready", function () {
+    expect(fixture.find('.clock-text').text()).not.toBe("00:00:00");
+  });
+
+  it("should format the text correctly", function () {
+    console.log(fixture);
+    fixture.setTimeStamp(1000);
+    expect(fixture.find('.clock-text').text()).toBe("00:00:00");
+
+  });
+
+  it("should allow offset for different time zones", function () {
+    fixture.clock({offset: 1});
+    // expect(fixture.find('.clock-text').text());
+
   });
 });

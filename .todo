@@ -1,4 +1,5 @@
 Todo:
-  ☐ add format
+  ✔ add format @done(2015-01-27 15:54) @project(Todo)
+  ☐ add testing methods
   ☐ abstract away refresh time
   ☐ making pm light functional
