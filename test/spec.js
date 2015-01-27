@@ -4,8 +4,8 @@ describe('clock', function() {
   fixture.clock();
 
   it('should append all elements to the DOM', function() {
-    expect(fixture).toContainElement('.outer-shell');
-    expect(fixture.find('.outer-shell')).toContainElement('.inner-shell');
+    expect(fixture).toHaveClass('outer-shell');
+    expect(fixture).toContainElement('.inner-shell');
     expect(fixture.find('.inner-shell')).toContainElement('.pm-label');
     expect(fixture.find('.inner-shell')).toContainElement('.auto-label');
     expect(fixture.find('.inner-shell')).toContainElement('.clock-screen');
