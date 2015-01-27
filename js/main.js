@@ -8,14 +8,34 @@
       this.element = element;
       this.$element = $(element);
 
+      this.defaults = {
+
+      };
+
       this._name = pluginName;
 
       init(this);
+
+      return this;
   }
+
+  Clock.prototype = {
+
+  };
 
   var setTime = function(theClock){
     var time = new Date();
-    theClock.$element.find('.clock-text').text( time.getHours() + ':' + time.getMinutes() + ':' + time.getSeconds());
+    time = time.getHours() + ':' + time.getMinutes() + ':' + time.getSeconds();
+    theClock.$element.find('.clock-text').text( format(time) );
+  };
+
+  var format = function (str) {
+    var arr = str.split(':');
+    // make it 12 hour clock
+    arr[0] -= 12 * ~~( parseInt(arr[0]) > 12);
+    return arr.map(function (val) {
+      return (parseInt(val) < 10) ? '0' + val : val;
+    }).join(':');
   };
 
   var init = function (theClock) {
