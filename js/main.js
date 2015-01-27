@@ -21,6 +21,9 @@
 
   var init = function (theClock) {
     build(theClock);
+    var a = setInterval((function (theClock) {
+      theClock.$element.find('.clock-text').text(getTime(theClock));
+    })(theClock),1000);
   };
 
   var build = function (theClock) {
@@ -60,6 +63,11 @@
     clockScreen.append(clockText);
     innerShell.append(labels, clockScreen, amFreq, fmFreq);
     theClock.$element.addClass('outer-shell').append(innerShell);
+  };
+
+  var getTime = function(){
+    var time = new Date();
+    return time.getHours() + ':' + time.getMinutes();
   };
 
   // A really lightweight plugin wrapper around the constructor,
