@@ -1,64 +1,30 @@
-;(function ( $, window, document, undefined ) {
 
-  // Create the defaults once
-  var pluginName = 'clock',
-      defaults = {
-        // allow passing a timeStamp, mainly for testing
-        timeStamp: undefined,
+var clock = {
+  init: function( options, elem ) {
+    // Mix in the passed-in options with the default options
+    this.options = $.extend( {}, this.options, options );
 
-        // allow passing an offset for different time zones
-        offset: 0
-      };
+    this.elem  = elem;
+    this.$elem = $(elem);
 
-  // The actual plugin constructor
-  function Clock( element, options ) {
-      this.element = element;
-      this.$element = $(element);
+    // Build the DOM's initial structure
+    this._build();
 
-      this.options = $.extend({}, defaults, options);
+    // call it passing 'this' for the interval calls that are not on the clock object
+    this.setTime(this);
+    setInterval(this.setTime,1000, this);
 
-      this._name = pluginName;
+    // return this so that we can chain
+    return this;
+  },
+  options: {
+    // allow passing a timeStamp, mainly for testing
+    timeStamp: undefined,
 
-      init(this);
-
-  }
-
-  // Clock.prototype = {
-  //   setTimeStamp: function (timeStamp) {
-  //     this.options.timeStamp = timeStamp;
-  //   },
-  //   setOffset: function (offset) {
-  //     this.options.offset = offset;
-  //
-  //   }
-  // };
-
-  var setTime = function(theClock){
-    var time = theClock.options.timeStamp ? new Date(theClock.options.timeStamp) : new Date();
-    // sanitize offset
-    var offset = parseFloat(theClock.options.offset) || 0;
-
-    time = (time.getHours() + offset ) + ':' + time.getMinutes() + ':' + time.getSeconds();
-    theClock.$element.find('.clock-text').text( format(time) );
-  };
-
-  var format = function (str) {
-    var arr = str.split(':');
-    // make it 12 hour clock
-    arr[0] -= 12 * ~~( parseInt(arr[0]) > 12);
-    return arr.map(function (val) {
-      return (parseInt(val) < 10) ? '0' + val : val;
-    }).join(':');
-  };
-
-  var init = function (theClock) {
-    build(theClock);
-    setTime(theClock);
-    setInterval(setTime,1000, theClock);
-  };
-
-  var build = function (theClock) {
-
+    // allow passing an offset for different time zones
+    offset: 0
+  },
+  _build: function(){
     var innerShell = $('<div>').addClass('inner-shell'),
         clockScreen = $('<div>').addClass('clock-screen'),
 
@@ -93,21 +59,59 @@
 
     clockScreen.append(clockText);
     innerShell.append(labels, clockScreen, amFreq, fmFreq);
-    theClock.$element.addClass('outer-shell').append(innerShell);
+    this.$elem.addClass('outer-shell').append(innerShell);
+  },
+  setTime: function( theClock ){
+    // allow calling setTime directly, overriding this.options
+    // options = $.extend({}, this.options, options)
+    var time = theClock.options.timeStamp ? new Date(theClock.options.timeStamp) : new Date();
+    // sanitize offset
+    var offset = parseFloat(theClock.options.offset) || 0;
+
+    time = (time.getHours() + offset ) + ':' + time.getMinutes() + ':' + time.getSeconds();
+    theClock.$elem.find('.clock-text').text( theClock._format(time) );
+  },
+  _format: function (str) {
+    var arr = str.split(':');
+    // make it 12 hour clock
+    arr[0] -= 12 * ~~( parseInt(arr[0]) > 12);
+    return arr.map(function (val) {
+      return (parseInt(val) < 10) ? '0' + val : val;
+    }).join(':');
+  }
+};
+
+// Object.create support test, and fallback for browsers without it
+if ( typeof Object.create !== 'function' ) {
+    Object.create = function (o) {
+        function F() {}
+        F.prototype = o;
+        return new F();
+    };
+}
+
+// Create a plugin based on a defined object
+$.plugin = function( name, object ) {
+  $.fn[name] = function( options ) {
+    return this.each(function() {
+      if ( ! $.data( this, name ) ) {
+        $.data( this, name, Object.create(object).init(
+        options, this ) );
+      }
+    });
   };
+};
 
+// Usage:
+// With clock, we could now essentially do this:
+// $.plugin('myobj', clock);
 
-  // A really lightweight plugin wrapper around the constructor,
-  // preventing against multiple instantiations
-  $.fn[pluginName] = function ( options ) {
-      return this.each(function () {
-          if (!$.data(this, 'plugin_' + pluginName)) {
-              $.data(this, 'plugin_' + pluginName,
-              new Clock( this, options ));
-          }
-      });
-  };
-
-})( jQuery, window, document );
-
+// and at this point we could do the following
+// $('#elem').myobj({name: "John"});
+// var inst = $('#elem').data('myobj');
+// inst.myMethod('I am a method');
+//
+$.plugin('clock', clock);
 $('.clock').clock();
+var a = $('.clock').data('clock');
+console.log(a._format('0:0:0'));
