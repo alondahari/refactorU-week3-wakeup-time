@@ -39,13 +39,21 @@ describe('clock', function() {
 
   });
 
-  it("should allow passing options on init", function () {
-    fixture = $('<div>').clock({timeStamp: 61000, offset: 1})
-    expect(fixture.find('.clock-text').text()).toBe('06:01:01');
+  it("should sanitize passed options", function () {
+    inst.setOption('offset', 'a');
+    expect(fixture.find('.clock-text').text()).toBe('05:01:01');
+    inst.setOption('offset', '-1');
+    expect(fixture.find('.clock-text').text()).toBe('04:01:01');
+    inst.setOption('offset', {});
+    expect(fixture.find('.clock-text').text()).toBe('05:01:01');
+    inst.setOption('timeStamp', 'a');
+    expect(fixture.find('.clock-text').text()).not.toBe('Invalid');
 
   });
 
-  it("should sanitize ", function () {
+  it("should allow passing options on init", function () {
+    fixture = $('<div>').clock({timeStamp: 61000, offset: 1})
+    expect(fixture.find('.clock-text').text()).toBe('06:01:01');
 
   });
 });

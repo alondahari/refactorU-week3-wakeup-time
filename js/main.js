@@ -25,6 +25,7 @@ var Clock = function (options, elem) {
   };
 
   this.setOption = function(option, value){
+
     options[option] = value;
     // setTime with new option immediately
     this.setTime(this);
@@ -41,6 +42,10 @@ var Clock = function (options, elem) {
     // add offset to time
     time = new Date((offset * 3600000) + Date.parse(time));
 
+    // in case invalid timeStamp was passed
+    if (typeof options.timeStamp != 'number') {
+      time = new Date();
+    }
     // format time
     time = time.toLocaleTimeString().split(' ');
     // remove the am/pm value and store it
