@@ -97,17 +97,13 @@ if ( typeof Object.create !== 'function' ) {
 }
 
 // Create a plugin based on a defined object
-$.plugin = function( name, object ) {
-  $.fn[name] = function( options ) {
-    return this.each(function() {
-      if ( ! $.data( this, name ) ) {
-        $.data( this, name, Object.create(object).init(
-        options, this ) );
-      }
-    });
-  };
+$.fn.clock = function( options ) {
+  return this.each(function() {
+    if ( ! $.data( this, 'clock' ) ) {
+      $.data( this, 'clock', Object.create(clock).init(
+      options, this ) );
+    }
+  });
 };
 
-$.plugin('clock', clock);
 $('.clock').clock();
-var a = $('.clock').data('clock');
