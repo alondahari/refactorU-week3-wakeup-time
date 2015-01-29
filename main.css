@@ -50,7 +50,9 @@ ul{
   border-radius: 100%;
 }
 
-
+.hidden-label:after{
+  opacity: 0;
+}
 
 .clock-text{
   color: #F93C25;
