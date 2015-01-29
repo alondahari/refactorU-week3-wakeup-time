@@ -1,14 +1,13 @@
 
-var clock = {
-  init: function( options, elem ) {
+var Clock = function (options, elem) {
+  this.init = function(){
     // Mix in the passed-in options with the default options
-    this.options = $.extend( {}, this.options, options );
-
+    options = $.extend( {}, defaults, options );
     // cache element with and without jQuery
     this.$elem = $(elem);
 
     // Build the DOM's initial structure
-    this._build();
+    _build(this, this.$elem);
 
     // call it passing 'this' for the interval calls that are not on the clock object
     this.setTime(this);
@@ -16,32 +15,60 @@ var clock = {
     setInterval(this.setTime, 1000, this);
 
     // return this so that we can chain
-    return this;
-  },
-  options: {
+    // return this;
+  };
+
+  defaults = {
     // allow passing a timeStamp to display a specific time
     timeStamp: 0,
 
     // allow passing an offset for different time zones
     offset: 0
-  },
-  setOption: function(option, value){
-    this.options[option] = value;
+  };
+
+  this.setOption = function(option, value){
+    options[option] = value;
     // setTime with new option immediately
     this.setTime(this);
-  },
-  // _build() helper functions
-  _creatListItem: function (ulClass, arr) {
+  };
+
+  this.setTime = function( clock ){
+    // allow calling setTime directly, overriding options
+    // options = $.extend({}, options, options)
+    var time = options.timeStamp ?
+        new Date(options.timeStamp) :
+        new Date();
+    // sanitize offset
+    var offset = parseFloat(options.offset) || 0;
+    // add offset to time
+    time = new Date((offset * 3600000) + Date.parse(time));
+
+    // format time
+    time = time.toLocaleTimeString().split(' ');
+    // remove the am/pm value and store it
+    var ampm = time.splice(1,1);
+
+    _pmLabelOn(ampm == 'PM', clock);
+
+    clock.$elem.find('.clock-text').text(
+      _format(time)
+    );
+  };
+
+  // ;build() helper functions
+  var _creatListItem = function (ulClass, arr) {
     return $('<ul>')
       .addClass(ulClass)
-      .append(this._createList(arr));
-  },
-  _createList: function (arr) {
+      .append(_createList(arr));
+  };
+
+  var _createList = function (arr) {
     return arr.map(function (val) {
       return $('<li>' + val + '</li>')
     })
-  },
-  _build: function(){
+  };
+
+  var _build = function(clock, $elem){
     // craete all child elements
     var innerShell = $('<div>').addClass('inner-shell'),
         clockScreen = $('<div>').addClass('clock-screen'),
@@ -51,63 +78,43 @@ var clock = {
           $('<li>').addClass('auto-label').text('auto')
         ),
         clockText = $('<p>').addClass('clock-text').text('00:00:00'),
-        amFreq = this._creatListItem('am-freq', ['AM','53','60','70','90','110','140','170','KHz']),
-        fmFreq = this._creatListItem('fm-freq', ['FM','88','92','96','102','106','108','MHz']);
+        amFreq = _creatListItem('am-freq', ['AM','53','60','70','90','110','140','170','KHz']),
+        fmFreq = _creatListItem('fm-freq', ['FM','88','92','96','102','106','108','MHz']);
 
     //append all to the clock
     clockScreen.append(clockText);
     innerShell.append(labels, clockScreen, amFreq, fmFreq);
-    this.$elem.addClass('outer-shell').append(innerShell);
-  },
-  setTime: function( clock ){
-    // allow calling setTime directly, overriding this.options
-    // options = $.extend({}, this.options, options)
-    var time = clock.options.timeStamp ?
-        new Date(clock.options.timeStamp) :
-        new Date();
-    // sanitize offset
-    var offset = parseFloat(clock.options.offset) || 0;
-    // add offset to time
-    time = new Date((offset * 3600000) + Date.parse(time));
+    $elem.addClass('outer-shell').append(innerShell);
+  };
 
-    // format time
-    time = time.toLocaleTimeString().split(' ');
-    // remove the am/pm value and store it
-    var ampm = time.splice(1,1);
+  var _pmLabelOn = function (bool, clock) {
+    if (_pmLabelOn.cache != bool){
+      _pmLabelOn.cache = bool
+      clock.$elem.find('.pm-label').toggleClass('hidden-label');
 
-    clock._pmLabelOn(ampm == 'PM');
-
-    clock.$elem.find('.clock-text').text(
-      clock._format(time)
-    );
-  },
-  _setOffset: function (offset) {
-
-  },
-  _pmLabelOn: function (bool) {
-    if (this._pmLabelOn.cache != bool){
-      this._pmLabelOn.cache = bool
-      this.$elem.find('.pm-label').toggleClass('hidden-label');
     }
-  },
-  _format: function (time) {
+  };
+  var _format = function (time) {
     var arr = time[0].split(':');
     // add 0 before hours when needed
     if (arr[0] < 10) arr[0] = '0' + arr[0];
 
     return arr.join(':');
-  }
-};
+  };
+
+  this.init()
+  // expose some methods
+  return this;
+}
 
 // Create a plugin based on a defined object
 // Object.create won't work with ltIE9
 $.fn.clock = function( options ) {
   return this.each(function() {
     if ( ! $.data( this, 'clock' ) ) {
-      $.data( this, 'clock', Object.create(clock).init(
-      options, this ) );
+      $.data( this, 'clock', new Clock(options, this) );
     }
   });
 };
 
-$('.clock').clock();
+var a = $('.clock').clock();

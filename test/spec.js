@@ -44,4 +44,8 @@ describe('clock', function() {
     expect(fixture.find('.clock-text').text()).toBe('06:01:01');
 
   });
+
+  it("should sanitize ", function () {
+
+  });
 });
