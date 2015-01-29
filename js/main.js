@@ -62,32 +62,40 @@ var clock = {
   setTime: function( clock ){
     // allow calling setTime directly, overriding this.options
     // options = $.extend({}, this.options, options)
-    var time = clock.options.timeStamp ? new Date(clock.options.timeStamp) : new Date();
+    var time = clock.options.timeStamp ?
+        new Date(clock.options.timeStamp) :
+        new Date();
     // sanitize offset
     var offset = parseFloat(clock.options.offset) || 0;
+    // add offset to time
+    time = new Date((offset * 3600000) + Date.parse(time));
 
-    time = (time.getHours() + offset ) + ':' + time.getMinutes() + ':' + time.getSeconds();
-    clock.$elem.find('.clock-text').text( clock._format(time) );
+    // format time
+    time = time.toLocaleTimeString().split(' ');
+    // remove the am/pm value and store it
+    var ampm = time.splice(1,1);
+
+    clock._pmLabelOn(ampm == 'PM');
+
+    clock.$elem.find('.clock-text').text(
+      clock._format(time)
+    );
+  },
+  _setOffset: function (offset) {
+
   },
   _pmLabelOn: function (bool) {
-    if (_pmLabelOn.cache != bool){
-      _pmLabelOn.cache = bool
+    if (this._pmLabelOn.cache != bool){
+      this._pmLabelOn.cache = bool
       this.$elem.find('.pm-label').toggleClass('hidden-label');
     }
   },
-  _format: function (str) {
-    var arr = str.split(':');
-    // make it 12 hour clock
-    if (arr[0] > 12) {
-      arr[0] -= 12;
-      this._pmLabelOn(true);
-    } else {
-      this._pmLabelOn(false);
-    }
+  _format: function (time) {
+    var arr = time[0].split(':');
+    // add 0 before hours when needed
+    if (arr[0] < 10) arr[0] = '0' + arr[0];
 
-    return arr.map(function (val) {
-      return (parseInt(val) < 10) ? '0' + val : val;
-    }).join(':');
+    return arr.join(':');
   }
 };
 
