@@ -64,16 +64,23 @@ var clock = {
     time = (time.getHours() + offset ) + ':' + time.getMinutes() + ':' + time.getSeconds();
     theClock.$elem.find('.clock-text').text( theClock._format(time) );
   },
+  _labelPm: function (bool) {
+    if (bool) {
+      this.$elem.find('.pm-label').removeClass('hidden-label');
+    } else {
+      this.$elem.find('.pm-label').addClass('hidden-label');
+    }
+  },
   _format: function (str) {
     var arr = str.split(':');
     // make it 12 hour clock
     if (arr[0] > 12) {
       arr[0] -= 12;
-      this.$elem.find('.pm-label').removeClass('hidden-label');
+      this._labelPm(true);
     } else {
-      this.$elem.find('.pm-label').addClass('hidden-label');
+      this._labelPm(false);
     }
-    // arr[0] -= 12 * ~~( parseInt(arr[0]) > 12);
+
     return arr.map(function (val) {
       return (parseInt(val) < 10) ? '0' + val : val;
     }).join(':');
