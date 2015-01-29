@@ -1,21 +1,19 @@
 
 var Clock = function (options, elem) {
-  this.init = function(){
+  var init = function(clock){
     // Mix in the passed-in options with the default options
     options = $.extend( {}, defaults, options );
     // cache element with and without jQuery
-    this.$elem = $(elem);
+    clock.$elem = $(elem);
 
     // Build the DOM's initial structure
-    _build(this, this.$elem);
+    _build(clock, this.$elem);
 
     // call it passing 'this' for the interval calls that are not on the clock object
-    this.setTime(this);
+    clock.setTime(clock);
     // passing extra parameters to setInterval won't work for ltIE10
-    setInterval(this.setTime, 1000, this);
+    setInterval(clock.setTime, 1000, clock);
 
-    // return this so that we can chain
-    // return this;
   };
 
   defaults = {
@@ -84,7 +82,7 @@ var Clock = function (options, elem) {
     //append all to the clock
     clockScreen.append(clockText);
     innerShell.append(labels, clockScreen, amFreq, fmFreq);
-    $elem.addClass('outer-shell').append(innerShell);
+    clock.$elem.addClass('outer-shell').append(innerShell);
   };
 
   var _pmLabelOn = function (bool, clock) {
@@ -101,8 +99,7 @@ var Clock = function (options, elem) {
 
     return arr.join(':');
   };
-
-  this.init()
+  init(this)
   // expose some methods
   return this;
 }
@@ -117,4 +114,4 @@ $.fn.clock = function( options ) {
   });
 };
 
-var a = $('.clock').clock();
+$('.clock').clock();
