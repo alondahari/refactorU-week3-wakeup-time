@@ -1,7 +1,7 @@
 describe('clock', function() {
-
   var fixture = $('<div>');
-  fixture.clock();
+  var inst = fixture.clock().data('clock');
+
 
   it('should append all elements to the DOM', function() {
     expect(fixture).toHaveClass('outer-shell');
@@ -19,9 +19,8 @@ describe('clock', function() {
   });
 
   it("should format the text correctly", function () {
-    console.log(fixture);
-    fixture.setTimeStamp(1000);
-    expect(fixture.find('.clock-text').text()).toBe("00:00:00");
+    inst.setOption('timeStamp', 61000);
+    expect(fixture.find('.clock-text').text()).toBe("05:01:01");
 
   });
 

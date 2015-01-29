@@ -20,10 +20,15 @@ var clock = {
   },
   options: {
     // allow passing a timeStamp to display a specific time
-    timeStamp: undefined,
+    timeStamp: 0,
 
     // allow passing an offset for different time zones
     offset: 0
+  },
+  setOption: function(option, value){
+    this.options[option] = value;
+    // setTime with new option immediately
+    this.setTime(this);
   },
   // _build() helper functions
   _creatListItem: function (ulClass, arr) {
