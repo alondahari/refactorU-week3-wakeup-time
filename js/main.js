@@ -5,7 +5,6 @@ var clock = {
     this.options = $.extend( {}, this.options, options );
 
     // cache element with and without jQuery
-    this.elem  = elem;
     this.$elem = $(elem);
 
     // Build the DOM's initial structure
@@ -13,6 +12,7 @@ var clock = {
 
     // call it passing 'this' for the interval calls that are not on the clock object
     this.setTime(this);
+    // passing extra parameters to setInterval won't work for ltIE10
     setInterval(this.setTime, 1000, this);
 
     // return this so that we can chain
@@ -59,21 +59,20 @@ var clock = {
     innerShell.append(labels, clockScreen, amFreq, fmFreq);
     this.$elem.addClass('outer-shell').append(innerShell);
   },
-  setTime: function( theClock ){
+  setTime: function( clock ){
     // allow calling setTime directly, overriding this.options
     // options = $.extend({}, this.options, options)
-    var time = theClock.options.timeStamp ? new Date(theClock.options.timeStamp) : new Date();
+    var time = clock.options.timeStamp ? new Date(clock.options.timeStamp) : new Date();
     // sanitize offset
-    var offset = parseFloat(theClock.options.offset) || 0;
+    var offset = parseFloat(clock.options.offset) || 0;
 
     time = (time.getHours() + offset ) + ':' + time.getMinutes() + ':' + time.getSeconds();
-    theClock.$elem.find('.clock-text').text( theClock._format(time) );
+    clock.$elem.find('.clock-text').text( clock._format(time) );
   },
-  _labelPm: function (bool) {
-    if (bool) {
-      this.$elem.find('.pm-label').removeClass('hidden-label');
-    } else {
-      this.$elem.find('.pm-label').addClass('hidden-label');
+  _pmLabelOn: function (bool) {
+    if (_pmLabelOn.cache != bool){
+      _pmLabelOn.cache = bool
+      this.$elem.find('.pm-label').toggleClass('hidden-label');
     }
   },
   _format: function (str) {
@@ -81,9 +80,9 @@ var clock = {
     // make it 12 hour clock
     if (arr[0] > 12) {
       arr[0] -= 12;
-      this._labelPm(true);
+      this._pmLabelOn(true);
     } else {
-      this._labelPm(false);
+      this._pmLabelOn(false);
     }
 
     return arr.map(function (val) {
@@ -92,16 +91,8 @@ var clock = {
   }
 };
 
-// Object.create support test, and fallback for browsers without it
-if ( typeof Object.create !== 'function' ) {
-    Object.create = function (o) {
-        function F() {}
-        F.prototype = o;
-        return new F();
-    };
-}
-
 // Create a plugin based on a defined object
+// Object.create won't work with ltIE9
 $.fn.clock = function( options ) {
   return this.each(function() {
     if ( ! $.data( this, 'clock' ) ) {
