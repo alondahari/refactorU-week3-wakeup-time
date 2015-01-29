@@ -86,10 +86,11 @@ var Clock = function (options, elem) {
   };
 
   var _pmLabelOn = function (bool, clock) {
-    if (_pmLabelOn.cache != bool){
-      _pmLabelOn.cache = bool
-      clock.$elem.find('.pm-label').toggleClass('hidden-label');
-
+    var label = clock.$elem.find('.pm-label');
+    if (bool){
+      label.removeClass('hidden-label');
+    } else {
+      label.addClass('hidden-label');
     }
   };
   var _format = function (time) {
@@ -99,9 +100,9 @@ var Clock = function (options, elem) {
 
     return arr.join(':');
   };
-  init(this)
-  // expose some methods
-  return this;
+
+  init(this);
+
 }
 
 // Create a plugin based on a defined object

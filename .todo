@@ -3,5 +3,5 @@ Todo:
   ✔ add testing methods @done(2015-01-29 11:02) @project(Todo)
   ✔ abstract away refresh time @done(2015-01-29 12:09) @project(Todo)
   ✔ making pm light functional @done(2015-01-29 12:09) @project(Todo)
-  ☐ Fix PM light
+  ✔ Fix PM light @done(2015-01-29 15:34) @project(Todo)
   ☐ Add sugar methods
