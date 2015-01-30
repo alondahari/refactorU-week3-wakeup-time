@@ -152,5 +152,5 @@ $.fn.clock = function( options ) {
 };
 
 $(document).on('ready', function(){
-  $('.clock').clock({timezone: ''});
+  $('.clock').clock({timeStamp: 12 * 3600000});
 });

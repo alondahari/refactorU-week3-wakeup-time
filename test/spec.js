@@ -75,4 +75,11 @@ describe('clock', function() {
     inst.setOption('timezone', 'libYa');
     expect(fixture.find('.time-zone').text()).toBe('Libya Standard Time');
   });
+
+  it("should display the pm labal correctly", function () {
+    fixture = $('<div>').clock({timeStamp: 1000});
+    expect(fixture.find('.pm-label')).not.toHaveClass('hidden-label');
+    fixture.data('clock').setOption('timeStamp', 43200000);
+    expect(fixture.find('.pm-label')).toHaveClass('hidden-label');
+  });
 });
