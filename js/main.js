@@ -55,7 +55,7 @@ var Clock = function (options, elem) {
     // sanitize offset
     var offset = parseFloat(options.offset) || 0;
     // add offset to time
-    time = new Date((offset * 3600000) + Date.parse(time));
+    time = new Date((offset) + Date.parse(time));
 
     // in case invalid timeStamp was passed
     if (typeof options.timeStamp != 'number') {
@@ -152,5 +152,5 @@ $.fn.clock = function( options ) {
 };
 
 $(document).on('ready', function(){
-  $('.clock').clock({timezone: ''});
+  $('.clock').clock();
 });
