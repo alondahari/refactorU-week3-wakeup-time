@@ -18,9 +18,9 @@ var Clock = function (options, elem) {
     _build(clock, this.$elem);
 
     // call it passing 'this' for the interval calls that are not on the clock object
-    clock.setTime(clock);
+    setTime(clock);
     // passing extra parameters to setInterval won't work for ltIE10
-    setInterval(clock.setTime, 1000, clock);
+    setInterval(setTime, 1000, clock);
 
   };
 
@@ -51,10 +51,14 @@ var Clock = function (options, elem) {
       options[option] = value;
     }
     // setTime with new option immediately
-    this.setTime(this);
+      setTime(this);
   };
 
-  this.setTime = function( clock ){
+  /////////////////
+  // hidden methods
+  /////////////////
+
+    var setTime = function( clock ){
     // allow calling setTime directly, overriding options
     var time = options.timeStamp ?
         new Date(options.timeStamp) :
@@ -79,10 +83,6 @@ var Clock = function (options, elem) {
       _format(time)
     );
   };
-
-  /////////////////
-  // hidden methods
-  /////////////////
 
   var _formatTimezone = function(args){
     var offsetSign = (options.offset > 0) ? '+' : '';
