@@ -2,8 +2,8 @@
 var Clock = function (options, elem) {
   var init = function(clock){
     if (options && options.hasOwnProperty('timezone')) {
-      if (clock.searchTimezones(options.timezone)) {
-        options = $.extend( {}, options, clock.searchTimezones(options.timezone) );
+      if (_searchTimezones(options.timezone)) {
+        options = $.extend( {}, options, _searchTimezones(options.timezone) );
       } else {
         delete options.timezone;
       }
@@ -28,19 +28,27 @@ var Clock = function (options, elem) {
     // allow passing a timeStamp to display a specific time
     timeStamp: 0,
 
-    // allow passing an offset for different time zones
-    offset: 0,
+    // get system offset and convert to ms from utc (inverted)
+    offset: new Date().getTimezoneOffset() * -60000,
 
     timezone: jstz.determine().name()
   };
 
+  defaults.localOffset = defaults.offset;
+
+  /////////////////
+  //exposed methods
+  /////////////////
+
   this.setOption = function(option, value){
 
-    options[option] = value;
 
-    if (option == 'timezone' && this.searchTimezones(value)) {
+    if (option == 'timezone' && _searchTimezones(value)) {
+      options = $.extend( {}, options, _searchTimezones(value) );
     // set timezone if changed
-      this.$elem.find('.time-zone').text(this.searchTimezones(value).timezone);
+      this.$elem.find('.time-zone').text(_formatTimezone);
+    } else {
+      options[option] = value;
     }
     // setTime with new option immediately
     this.setTime(this);
@@ -48,14 +56,13 @@ var Clock = function (options, elem) {
 
   this.setTime = function( clock ){
     // allow calling setTime directly, overriding options
-    // options = $.extend({}, options, options)
     var time = options.timeStamp ?
         new Date(options.timeStamp) :
         new Date();
     // sanitize offset
     var offset = parseFloat(options.offset) || 0;
     // add offset to time
-    time = new Date((offset) + Date.parse(time));
+    time = new Date(offset - options.localOffset + Date.parse(time));
 
     // in case invalid timeStamp was passed
     if (typeof options.timeStamp != 'number') {
@@ -73,7 +80,15 @@ var Clock = function (options, elem) {
     );
   };
 
-  // ;build() helper functions
+  /////////////////
+  // hidden methods
+  /////////////////
+
+  var _formatTimezone = function(args){
+    var offsetSign = (options.offset > 0) ? '+' : '';
+    return options.timezone + ' (' + offsetSign + (options.offset / 3600000) + ')'
+  };
+
   var _creatListItem = function (ulClass, arr) {
     return $('<ul>')
       .addClass(ulClass)
@@ -101,7 +116,7 @@ var Clock = function (options, elem) {
         fmFreq = _creatListItem('fm-freq', ['FM','88','92','96','102','106','108','MHz']);
 
     //append all to the clock
-    timeZone.text(options.timezone);
+    timeZone.text(_formatTimezone);
     clockScreen.append(clockText);
     innerShell.append(timeZone, labels, clockScreen, amFreq, fmFreq);
     clock.$elem.addClass('outer-shell').append(innerShell);
@@ -123,7 +138,7 @@ var Clock = function (options, elem) {
     return arr.join(':');
   };
 
-  this.searchTimezones = function (str) {
+  var _searchTimezones = function (str) {
     if (!str) return false;
     var timezone;
     str = new RegExp(str, 'i');
@@ -152,5 +167,5 @@ $.fn.clock = function( options ) {
 };
 
 $(document).on('ready', function(){
-  $('.clock').clock({timeStamp: 12 * 3600000});
+  $('.clock').clock();
 });
