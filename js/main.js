@@ -23,7 +23,7 @@ var Clock = function (options, elem) {
     // set time for the first time, so it won't be empty for the first second
     setTime(clock);
     // passing extra parameters to setInterval won't work for ltIE10
-    setInterval(setTime, 1000, clock);
+    setInterval(tick, 1000, clock);
 
   };
 
@@ -80,21 +80,12 @@ var Clock = function (options, elem) {
   // hidden methods
   /////////////////
 
-    var setTime = function( clock ){
-    // allow overriding time with time stamp
-    var time = options.timeStamp ?
-        new Date(options.timeStamp) :
-        new Date();
-    // sanitize offset
-    var offset = parseFloat(options.offset) || 0;
-    // add offset to time
-    time = new Date(offset - options.localOffset + Date.parse(time));
-
-    // in case invalid timeStamp was passed
-    if (typeof options.timeStamp != 'number') {
-      time = new Date();
-    }
+  var displayTime = function(timeStamp, clock){
     // format time
+    var time = new Date(timeStamp)
+
+
+    // console.log(timeStamp);
     time = time.toLocaleTimeString().split(' ');
     // remove the am/pm value and store it
     var ampm = time.splice(1,1);
@@ -104,6 +95,26 @@ var Clock = function (options, elem) {
     clock.$elem.find('.clock-text').text(
       _format(time)
     );
+  };
+
+  var tick = function(clock){
+    clock.currentTime += 1000;
+    displayTime(clock.currentTime, clock)
+  };
+
+  var setTime = function( clock ){
+    // allow overriding time with time stamp
+    var time = (options.timeStamp &&  typeof options.timeStamp == 'number') ?
+        options.timeStamp :
+        Date.now();
+
+    // sanitize offset
+    var offset = parseFloat(options.offset) || 0;
+    // add offset to time
+    clock.currentTime = time + offset - options.localOffset;
+
+    displayTime(clock.currentTime, clock);
+
   };
 
   var _formatTimezone = function(args){
@@ -128,7 +139,7 @@ var Clock = function (options, elem) {
         if (val.hasOwnProperty('append')) cache += _createElements(val.append);
         cache += !elArr[0] ? '</div>' : '</' + elArr[0] + '>';
       })
-    console.log(cache);
+
     return cache;
   }
 
@@ -189,7 +200,7 @@ var Clock = function (options, elem) {
 
 }
 
-// Create a plugin based on clock
+// Create a plugin based on clock s
 $.fn.clock = function( options ) {
   return this.each(function() {
     if ( ! $.data( this, 'clock' ) ) {
