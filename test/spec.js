@@ -62,9 +62,14 @@ describe('clock', function() {
     expect(fixture.find('.time-zone').text()).toBe('Samoa Standard Time');
     fixture = $('<div>').clock({timezone: 'jer'});
     expect(fixture.find('.time-zone').text()).toBe('Israel Standard Time');
-    fixture = $('<div>').clock({timezone: 'libYa'});
-    expect(fixture.find('.time-zone').text()).toBe('Libya Standard Time');
+
     fixture = $('<div>').clock({timezone: '123'});
     expect(fixture.find('.time-zone').text()).toBe('America/Denver');
+  });
+
+  it("should allow passing timezone in setOption", function () {
+    inst = fixture.data('clock');
+    inst.setOption('timezone', 'libYa');
+    expect(fixture.find('.time-zone').text()).toBe('Libya Standard Time');
   });
 });
