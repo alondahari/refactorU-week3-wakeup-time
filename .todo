@@ -1,9 +1,9 @@
 Todo:
-  ✔ fix timezone pm bug @done(2015-01-30 11:57) @project(Todo)
-  ☐ Add sugar methods
 ＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿
 Archive:
 
+  ✔ fix timezone pm bug @done(2015-01-30 11:57) @project(Todo)
+  ✔ Add sugar methods @done(2015-01-30 12:06) @project(Todo)
   ✔ add format @done(2015-01-27 15:54) @project(Todo)
   ✔ add testing methods @done(2015-01-29 11:02) @project(Todo)
   ✔ abstract away refresh time @done(2015-01-29 12:09) @project(Todo)
