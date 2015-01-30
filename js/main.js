@@ -89,12 +89,6 @@ var Clock = function (options, elem) {
     return options.timezone + ' (' + offsetSign + (options.offset / 3600000) + ')'
   };
 
-  var _creatListItem = function (ulClass, arr) {
-    return $('<ul>')
-      .addClass(ulClass)
-      .append(_createList(arr));
-  };
-
   var _createList = function (arr) {
     return arr.map(function (val) {
       return {el: 'li.' + val, text: val}
@@ -118,7 +112,8 @@ var Clock = function (options, elem) {
 
   var _build = function(clock, $elem){
 
-    clock.$elem.addClass('outer-shell').append(_createElements([
+    clock.$elem.addClass('outer-shell')
+      .append(_createElements([
       {el: '.inner-shell', append: [
         {el: '.time-zone', text: _formatTimezone()},
         {el: 'ul.labels', append: [
@@ -135,7 +130,7 @@ var Clock = function (options, elem) {
         }
       ]}
     ]));
-    
+
   };
 
   var _pmLabelOn = function (bool, clock) {

@@ -35,17 +35,17 @@ describe('clock', function() {
 
   it("should allow offset for different time zones", function () {
     inst.setOption('offset', 3600000);
-    expect(fixture.find('.clock-text').text()).toBe('11:01:01');
+    expect(fixture.find('.clock-text').text()).toBe('01:01:01');
 
   });
 
   it("should sanitize passed options", function () {
     inst.setOption('offset', 'a');
-    expect(fixture.find('.clock-text').text()).toBe('10:01:01');
+    expect(fixture.find('.clock-text').text()).toBe('12:01:01');
     inst.setOption('offset', '-3600000');
-    expect(fixture.find('.clock-text').text()).toBe('09:01:01');
+    expect(fixture.find('.clock-text').text()).toBe('11:01:01');
     inst.setOption('offset', {});
-    expect(fixture.find('.clock-text').text()).toBe('10:01:01');
+    expect(fixture.find('.clock-text').text()).toBe('12:01:01');
     inst.setOption('timeStamp', 'a');
     expect(fixture.find('.clock-text').text()).not.toBe('Invalid');
 
@@ -53,7 +53,7 @@ describe('clock', function() {
 
   it("should allow passing options on init", function () {
     fixture = $('<div>').clock({timeStamp: 61000, offset: 3600000})
-    expect(fixture.find('.clock-text').text()).toBe('11:01:01');
+    expect(fixture.find('.clock-text').text()).toBe('01:01:01');
 
   });
 
@@ -64,10 +64,10 @@ describe('clock', function() {
     expect(fixture.find('.time-zone').text()).toBe('Israel Standard Time (+3)');
 
     fixture = $('<div>').clock({timezone: 'adsfre'});
-    expect(fixture.find('.time-zone').text()).toBe('America/Denver (+7)');
+    expect(fixture.find('.time-zone').text()).toBe('America/Denver (-7)');
 
     fixture = $('<div>').clock({timezone: ''});
-    expect(fixture.find('.time-zone').text()).toBe('America/Denver (+7)');
+    expect(fixture.find('.time-zone').text()).toBe('America/Denver (-7)');
   });
 
   it("should allow passing timezone in setOption", function () {
