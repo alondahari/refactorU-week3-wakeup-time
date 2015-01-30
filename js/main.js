@@ -1,6 +1,8 @@
 
 var Clock = function (options, elem) {
+
   var init = function(clock){
+
     if (options && options.hasOwnProperty('timezone')) {
       if (_searchTimezones(options.timezone)) {
         options = $.extend( {}, options, _searchTimezones(options.timezone) );
@@ -11,13 +13,14 @@ var Clock = function (options, elem) {
 
     // Mix in the passed-in options with the default options
     options = $.extend( {}, defaults, options );
-    // cache element with and without jQuery
+
+    // cache element with jQuery
     clock.$elem = $(elem);
 
     // Build the DOM's initial structure
     _build(clock, this.$elem);
 
-    // call it passing 'this' for the interval calls that are not on the clock object
+    // set time for the first time, so it won't be empty for the first second
     setTime(clock);
     // passing extra parameters to setInterval won't work for ltIE10
     setInterval(setTime, 1000, clock);
@@ -31,10 +34,13 @@ var Clock = function (options, elem) {
     // get system offset and convert to ms from utc (inverted)
     offset: new Date().getTimezoneOffset() * -60000,
 
+    // get local timezone using 3rd party
     timezone: jstz.determine().name()
   };
 
+  // cache local offset
   defaults.localOffset = defaults.offset;
+
 
   /////////////////
   //exposed methods
@@ -75,7 +81,7 @@ var Clock = function (options, elem) {
   /////////////////
 
     var setTime = function( clock ){
-    // allow calling setTime directly, overriding options
+    // allow overriding time with time stamp
     var time = options.timeStamp ?
         new Date(options.timeStamp) :
         new Date();
@@ -183,8 +189,7 @@ var Clock = function (options, elem) {
 
 }
 
-// Create a plugin based on a defined object
-// Object.create won't work with ltIE9
+// Create a plugin based on clock
 $.fn.clock = function( options ) {
   return this.each(function() {
     if ( ! $.data( this, 'clock' ) ) {
