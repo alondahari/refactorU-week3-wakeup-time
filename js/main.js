@@ -130,7 +130,7 @@ var Clock = function (options, elem) {
     $.each(timezones, function (i, val) {
       if (val.abbr.match(str) || val.text.match(str) || val.value.match(str))
         timezone = {
-          offset: val.offset,
+          offset: val.offset * 3600000,
           timezone: val.value
         }
     })
@@ -152,5 +152,5 @@ $.fn.clock = function( options ) {
 };
 
 $(document).on('ready', function(){
-  $('.clock').clock();
+  $('.clock').clock({timezone: ''});
 });
