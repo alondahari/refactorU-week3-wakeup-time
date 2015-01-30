@@ -1,7 +1,6 @@
 
 var Clock = function (options, elem) {
   var init = function(clock){
-
     if (options && options.hasOwnProperty('timezone')) {
       if (clock.searchTimezones(options.timezone)) {
         options = $.extend( {}, options, clock.searchTimezones(options.timezone) );
@@ -125,6 +124,7 @@ var Clock = function (options, elem) {
   };
 
   this.searchTimezones = function (str) {
+    if (!str) return false;
     var timezone;
     str = new RegExp(str, 'i');
     $.each(timezones, function (i, val) {
@@ -152,5 +152,5 @@ $.fn.clock = function( options ) {
 };
 
 $(document).on('ready', function(){
-  $('.clock').clock();
+  $('.clock').clock({timezone: ''});
 });

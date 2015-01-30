@@ -63,7 +63,10 @@ describe('clock', function() {
     fixture = $('<div>').clock({timezone: 'jer'});
     expect(fixture.find('.time-zone').text()).toBe('Israel Standard Time');
 
-    fixture = $('<div>').clock({timezone: '123'});
+    fixture = $('<div>').clock({timezone: 'adsfre'});
+    expect(fixture.find('.time-zone').text()).toBe('America/Denver');
+
+    fixture = $('<div>').clock({timezone: ''});
     expect(fixture.find('.time-zone').text()).toBe('America/Denver');
   });
 
