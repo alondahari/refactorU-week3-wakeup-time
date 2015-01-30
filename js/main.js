@@ -97,29 +97,45 @@ var Clock = function (options, elem) {
 
   var _createList = function (arr) {
     return arr.map(function (val) {
-      return $('<li>' + val + '</li>')
+      return {el: 'li.' + val, text: val}
     })
   };
 
+  var _createElements = function (arr) {
+    var cache = '';
+      arr.forEach(function (val) {
+        var elArr = val.el.split('.');
+        // console.log(!!elArr[0]);
+        cache += !elArr[0] ? '<div' : '<' + elArr[0];
+        cache += ' class="' + elArr[1] + '">';
+        if (val.hasOwnProperty('text')) cache += val.text;
+        if (val.hasOwnProperty('append')) cache += _createElements(val.append);
+        cache += !elArr[0] ? '</div>' : '</' + elArr[0] + '>';
+      })
+    console.log(cache);
+    return cache;
+  }
+
   var _build = function(clock, $elem){
-    // craete all child elements
-    var innerShell = $('<div>').addClass('inner-shell'),
-        timeZone = $('<div>').addClass('time-zone'),
-        clockScreen = $('<div>').addClass('clock-screen'),
 
-        labels = $('<ul>').addClass('labels').append(
-          $('<li>').addClass('pm-label').text('pm'),
-          $('<li>').addClass('auto-label').text('auto')
-        ),
-        clockText = $('<p>').addClass('clock-text').text('00:00:00'),
-        amFreq = _creatListItem('am-freq', ['AM','53','60','70','90','110','140','170','KHz']),
-        fmFreq = _creatListItem('fm-freq', ['FM','88','92','96','102','106','108','MHz']);
-
-    //append all to the clock
-    timeZone.text(_formatTimezone);
-    clockScreen.append(clockText);
-    innerShell.append(timeZone, labels, clockScreen, amFreq, fmFreq);
-    clock.$elem.addClass('outer-shell').append(innerShell);
+    clock.$elem.addClass('outer-shell').append(_createElements([
+      {el: '.inner-shell', append: [
+        {el: '.time-zone', text: _formatTimezone()},
+        {el: 'ul.labels', append: [
+          {el: 'li.pm-label', text: 'pm'},
+          {el: 'li.auto-label', text: 'auto'}
+        ]},
+        {el: '.clock-screen', append: [
+          {el: 'p.clock-text'}
+        ]},
+        {el: 'ul.am-freq',
+          append: _createList(['AM','53','60','70','90','110','140','170','KHz'])},
+        {el: 'ul.fm-freq',
+          append: _createList(['FM','88','92','96','102','106','108','MHz'])
+        }
+      ]}
+    ]));
+    
   };
 
   var _pmLabelOn = function (bool, clock) {
