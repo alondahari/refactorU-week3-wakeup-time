@@ -82,11 +82,7 @@ var Clock = function (options, elem) {
 
   var displayTime = function(timeStamp, clock){
     // format time
-    var time = new Date(timeStamp)
-
-
-    // console.log(timeStamp);
-    time = time.toLocaleTimeString().split(' ');
+    var time = new Date(timeStamp).toLocaleTimeString().split(' ');
     // remove the am/pm value and store it
     var ampm = time.splice(1,1);
 
