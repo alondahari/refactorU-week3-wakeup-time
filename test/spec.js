@@ -82,4 +82,15 @@ describe('clock', function() {
     fixture.data('clock').setOption('timeStamp', 43200000);
     expect(fixture.find('.pm-label')).toHaveClass('hidden-label');
   });
+
+  it("should work with sugar methods", function () {
+    fixture = $('<div>').clock();
+    inst = fixture.data('clock');
+    inst.setTimezone('libYa');
+    expect(fixture.find('.time-zone').text()).toBe('Libya Standard Time (+2)');
+    inst.setTimeStamp(61000);
+    expect(fixture.find('.clock-text').text()).toBe("02:01:01");
+    inst.setOffset(3600000);
+    expect(fixture.find('.clock-text').text()).toBe("01:01:01");
+  });
 });

@@ -42,7 +42,6 @@ var Clock = function (options, elem) {
 
   this.setOption = function(option, value){
 
-
     if (option == 'timezone' && _searchTimezones(value)) {
       options = $.extend( {}, options, _searchTimezones(value) );
     // set timezone if changed
@@ -53,6 +52,23 @@ var Clock = function (options, elem) {
     // setTime with new option immediately
       setTime(this);
   };
+
+  /////////
+  // Sugar
+  /////////
+
+  this.setOffset = function (offset) {
+    this.setOption('offset', offset);
+  }
+
+  this.setTimezone = function (timezone) {
+    this.setOption('timezone', timezone);
+  }
+  this.setTimeStamp = function (timeStamp) {
+    this.setOption('timeStamp', timeStamp);
+  }
+
+
 
   /////////////////
   // hidden methods
