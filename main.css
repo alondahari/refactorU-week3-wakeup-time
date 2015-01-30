@@ -22,6 +22,14 @@ ul{
   padding: 20px;
 }
 
+.time-zone{
+  color: #444;
+  text-align: center;
+  margin-top: -5px;
+  padding-bottom: 10px;
+  font-size: 20px;
+}
+
 .labels{
   text-align: right;
   padding: 5px 10px;
@@ -34,10 +42,10 @@ ul{
 
 .clock-screen{
   background-color: #7B200C;
-  width: 72%;
+  width: 70%;
   margin-left: 45px;
   padding-top: 7px;
-  padding-left: 25px;
+  padding-left: 18px;
 }
 
 .pm-label:after, .auto-label:after{

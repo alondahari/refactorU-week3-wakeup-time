@@ -1,6 +1,11 @@
 
 var Clock = function (options, elem) {
   var init = function(clock){
+    options = options || {};
+    console.log(clock.searchTimezones(options.timezone));
+    if (options.hasOwnProperty('timezone') && !!clock.searchTimezones(options.timezone))
+      options = $.extend( {}, options, clock.searchTimezones(options.timezone) );
+
     // Mix in the passed-in options with the default options
     options = $.extend( {}, defaults, options );
     // cache element with and without jQuery
@@ -21,7 +26,9 @@ var Clock = function (options, elem) {
     timeStamp: 0,
 
     // allow passing an offset for different time zones
-    offset: 0
+    offset: 0,
+
+    timezone: jstz.determine().name()
   };
 
   this.setOption = function(option, value){
@@ -74,6 +81,7 @@ var Clock = function (options, elem) {
   var _build = function(clock, $elem){
     // craete all child elements
     var innerShell = $('<div>').addClass('inner-shell'),
+        timeZone = $('<div>').addClass('time-zone').text(options.timezone),
         clockScreen = $('<div>').addClass('clock-screen'),
 
         labels = $('<ul>').addClass('labels').append(
@@ -86,7 +94,7 @@ var Clock = function (options, elem) {
 
     //append all to the clock
     clockScreen.append(clockText);
-    innerShell.append(labels, clockScreen, amFreq, fmFreq);
+    innerShell.append(timeZone, labels, clockScreen, amFreq, fmFreq);
     clock.$elem.addClass('outer-shell').append(innerShell);
   };
 
@@ -106,6 +114,19 @@ var Clock = function (options, elem) {
     return arr.join(':');
   };
 
+  this.searchTimezones = function (str) {
+    var timezone;
+    str = new RegExp(str, 'i');
+    $.each(timezones, function (i, val) {
+      if (val.abbr.match(str) || val.text.match(str) || val.value.match(str))
+        timezone = {
+          offset: val.offset,
+          timezone: val.value
+        }
+    })
+    if (timezone) return timezone;
+  };
+
   init(this);
 
 }
@@ -120,4 +141,6 @@ $.fn.clock = function( options ) {
   });
 };
 
-$('.clock').clock();
+$(document).on('ready', function(){
+  $('.clock').clock({timezone: 123});
+});
